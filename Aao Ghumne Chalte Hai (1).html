@@ -1,0 +1,1465 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Aao Ghumne Chalte Hai</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600&family=IBM+Plex+Mono:wght@500&family=Yatra+One&display=swap">
+<style>
+/* Layout: a planner panel on the left, a timed route down the right, like a day sheet from a guide.
+   Palette: Aravalli neem green, ridge stone, marigold for lesser-known marks and lunch.
+   Type: Yatra One for names, Hind for reading, Plex Mono for clock times. */
+:root {
+  --bg: #EDF0EB;
+  --surface: #F8FAF7;
+  --ink: #16231F;
+  --muted: #55655F;
+  --line: #CFD7D0;
+  --accent: #0B6B5E;
+  --accent-ink: #FFFFFF;
+  --soft: #DCE8E2;
+  --gem-bg: #F6E3A8;
+  --gem-ink: #4A3500;
+  --warn-bg: #F3E6D0;
+  --warn-ink: #5A3A0A;
+  --drive: #B7C6BD;
+  --lunch: #D9A21B;
+  --font-display: "Yatra One", "Hind", Georgia, serif;
+  --font-body: "Hind", system-ui, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1715;
+    --surface: #15211E;
+    --ink: #E4ECE7;
+    --muted: #9DB0A8;
+    --line: #26372F;
+    --accent: #4FC3AE;
+    --accent-ink: #072420;
+    --soft: #1B2F2A;
+    --gem-bg: #3A2E0A;
+    --gem-ink: #F6D77A;
+    --warn-bg: #2E2414;
+    --warn-ink: #EBCB93;
+    --drive: #3A5148;
+    --lunch: #E6B94A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1715;
+  --surface: #15211E;
+  --ink: #E4ECE7;
+  --muted: #9DB0A8;
+  --line: #26372F;
+  --accent: #4FC3AE;
+  --accent-ink: #072420;
+  --soft: #1B2F2A;
+  --gem-bg: #3A2E0A;
+  --gem-ink: #F6D77A;
+  --warn-bg: #2E2414;
+  --warn-ink: #EBCB93;
+  --drive: #3A5148;
+  --lunch: #E6B94A;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  padding-block: 0 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1120px; margin: 0 auto; }
+
+/* Header */
+.top { padding: 28px 0 10px; }
+.brand { display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap; }
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(30px, 5.5vw, 42px);
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+}
+.devanagari { font-family: var(--font-body); color: var(--muted); font-size: 18px; }
+.tools { margin-left: auto; }
+.tagline { font-family: var(--font-display); font-size: clamp(19px, 3.4vw, 24px); line-height: 1.25; color: var(--accent); margin: 8px 0 0; text-wrap: balance; }
+.lede { margin: 8px 0 0; max-width: 62ch; color: var(--muted); }
+.skyline { display: block; width: 100%; height: auto; margin-top: 16px; }
+.skyline a.mon { cursor: pointer; }
+.skyline a.mon:hover, .skyline a.mon:focus-visible { opacity: 0.8; outline: none; }
+.skyline-cap a { color: var(--accent); font-weight: 500; text-underline-offset: 3px; }
+.skyline-cap { display: flex; flex-wrap: wrap; gap: 2px 16px; margin: 8px 0 0; padding: 0; list-style: none; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+
+/* Layout */
+.layout { display: grid; grid-template-columns: minmax(280px, 340px) minmax(0, 1fr); gap: 32px; align-items: start; margin-top: 18px; }
+@media (max-width: 860px) { .layout { grid-template-columns: minmax(0, 1fr); gap: 24px; } }
+
+/* Planner panel */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 20px; min-width: 0; }
+@media (min-width: 861px) { .panel { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow-y: auto; } }
+h2 { font-family: var(--font-display); font-weight: 400; font-size: 22px; line-height: 1.2; margin: 0 0 14px; }
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; min-width: 0; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.row2 .field { margin-bottom: 14px; }
+label, legend, .lab { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+select, input[type="date"], input[type="text"], textarea {
+  font: inherit; font-size: 15px; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; width: 100%; min-width: 0;
+}
+select:focus-visible, input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+fieldset { border: 0; padding: 0; margin: 0 0 14px; min-width: 0; }
+legend { padding: 0; margin-bottom: 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { position: relative; display: inline-block; text-transform: none; letter-spacing: 0; font-size: 14px; font-weight: 500; color: var(--ink); }
+.chip input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.chip span { display: inline-block; padding: 6px 13px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); }
+.chip input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.chip input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.check { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--ink); margin-bottom: 10px; }
+.check input { width: 18px; height: 18px; accent-color: var(--accent); margin: 0; }
+
+/* Buttons */
+.btn {
+  display: inline-block; text-decoration: none; text-align: center;
+  font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink);
+  padding: 9px 16px; border-radius: 4px;
+}
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn.sm { font-size: 13.5px; padding: 6px 12px; }
+.btn:disabled { opacity: 0.55; cursor: default; }
+.linkbtn { font: inherit; font-size: 14px; font-weight: 600; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.linkbtn:hover { color: var(--ink); }
+
+/* Results */
+.results { min-width: 0; }
+.banner { background: var(--soft); border-radius: 6px; padding: 12px 14px; margin-bottom: 18px; font-size: 14.5px; max-width: 76ch; }
+.banner p { margin: 0; }
+.banner p + p { margin-top: 6px; }
+.banner b { font-weight: 600; }
+.banner .festival { color: var(--warn-ink); background: var(--warn-bg); padding: 4px 8px; border-radius: 3px; }
+.summary { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; margin-bottom: 12px; }
+.summary .big { font-family: var(--font-display); font-size: 24px; line-height: 1.2; }
+.summary .small { color: var(--muted); font-size: 14px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 16px; }
+.daybar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--line); margin: 2px 0 8px; }
+.daybar i { display: block; height: 100%; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--muted); padding-bottom: 16px; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+.timeline { margin: 0; padding: 0; }
+.stop { display: grid; grid-template-columns: 74px minmax(0, 1fr); column-gap: 16px; }
+.when { font-family: var(--font-mono); font-size: 13px; color: var(--accent); text-align: right; padding-top: 3px; white-space: nowrap; }
+.body { border-left: 2px solid var(--line); padding: 0 0 26px 20px; position: relative; min-width: 0; }
+.body::before { content: ""; position: absolute; left: -6px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+.stop.edge .body::before { background: var(--bg); border: 2px solid var(--accent); left: -7px; top: 5px; width: 12px; height: 12px; }
+.stop.lunch .body::before { background: var(--lunch); }
+.stop.lunch .when { color: var(--ink); }
+.stop.last .body { border-left-color: transparent; padding-bottom: 0; }
+.leg { margin-left: 90px; border-left: 2px dashed var(--line); padding: 0 0 22px 20px; color: var(--muted); font-size: 13px; margin-top: -4px; }
+.leg.rush { color: var(--warn-ink); }
+.stop h3 { font-family: var(--font-display); font-weight: 400; font-size: 21px; line-height: 1.25; margin: 0; text-wrap: balance; }
+.area { color: var(--muted); font-size: 14px; margin: 0 0 8px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; padding: 0; list-style: none; }
+.meta li { font-size: 12.5px; font-weight: 500; background: var(--soft); color: var(--ink); padding: 2px 9px; border-radius: 3px; }
+.meta li.gem { background: var(--gem-bg); color: var(--gem-ink); }
+.stop p { margin: 0 0 8px; max-width: 64ch; }
+.tip b, .note b { font-weight: 600; }
+.note { background: var(--warn-bg); color: var(--warn-ink); padding: 6px 10px; border-radius: 3px; font-size: 14px; max-width: 64ch; }
+.why { color: var(--muted); font-size: 14px; }
+.row-links { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; }
+.maplink { font-weight: 600; color: var(--accent); }
+.empty { padding: 20px; border: 1px dashed var(--line); border-radius: 6px; color: var(--muted); }
+.season { margin-top: 30px; padding-top: 16px; border-top: 1px solid var(--line); }
+.season h2 { font-size: 18px; margin-bottom: 8px; }
+.season ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 14.5px; }
+.fine { color: var(--muted); font-size: 13.5px; margin-top: 22px; max-width: 70ch; }
+
+/* AI guide */
+.ai { margin-top: 34px; padding: 20px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.ai h2 { font-size: 20px; }
+.ai-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.ai-row .field { margin: 0; min-width: 150px; }
+.status { color: var(--muted); font-size: 14px; margin: 10px 0 0; min-height: 1.4em; }
+.out { margin-top: 12px; max-width: 66ch; }
+.out.stream { white-space: pre-wrap; }
+.out h4 { font-family: var(--font-display); font-weight: 400; font-size: 18px; margin: 16px 0 4px; }
+.out p { margin: 0 0 10px; }
+.ask { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); }
+.ask h3 { font-family: var(--font-display); font-weight: 400; font-size: 18px; margin: 0 0 10px; }
+.ask-grid { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+@media (max-width: 720px) { .ask-grid { grid-template-columns: minmax(0, 1fr); } }
+.qchips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.qchips button { font: inherit; font-size: 13.5px; font-weight: 500; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.qchips button:hover { border-color: var(--accent); }
+/* Destination search */
+.explore { margin-top: 18px; padding: 20px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.explore h2 { font-size: 20px; margin-bottom: 4px; }
+.explore .sub { margin: 0 0 14px; color: var(--muted); max-width: 62ch; }
+.explore-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.explore-row .field { margin: 0; flex: 1 1 240px; }
+.dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 16px; margin-top: 18px; }
+.dcard { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); overflow: hidden; }
+.dphoto { display: flex; align-items: center; justify-content: center; aspect-ratio: 16 / 9; max-width: 100%; background: var(--soft); border-bottom: 1px solid var(--line); color: var(--accent); font-weight: 600; font-size: 14px; text-decoration: none; text-align: center; padding: 8px; }
+.dphoto { overflow: hidden; }
+.dbody { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.dbody h3 { font-family: var(--font-display); font-weight: 400; font-size: 18px; line-height: 1.25; margin: 0; text-wrap: balance; }
+.dbody .area { margin: 0; }
+.dbody p { margin: 0; font-size: 15px; }
+.dbody .meta { margin: 2px 0 4px; }
+.dest-title { font-family: var(--font-display); font-weight: 400; font-size: 18px; margin: 18px 0 0; }
+.copybox { margin-top: 10px; }
+.copybox textarea { min-height: 140px; font-family: var(--font-mono); font-size: 13px; }
+
+@media (prefers-reduced-motion: no-preference) { .stop { animation: rise 0.35s ease both; } }
+@keyframes rise { from { opacity: 0.001; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Aao Ghumne Chalte Hai</h1>
+      <span class="devanagari" lang="hi">आओ घूमने चलते हैं</span>
+      <div class="tools"><button type="button" class="btn ghost sm" id="btn-theme" aria-label="Change colour theme">Theme: Auto</button></div>
+    </div>
+    <p class="tagline" lang="hi">Delhi ki Har Gali, Ek Nayi Kahani!</p>
+    <p class="lede">Pick what you enjoy and how many hours you have. Get a timed route through lesser-known places around Gurugram and Delhi, matched to the season, the day of the week, the traffic and the daylight.</p>
+    <svg class="skyline" viewBox="0 0 800 200" role="img" aria-label="Tap a landmark to see real photos. Skyline of Delhi's famous places: Humayun's Tomb, Lotus Temple, Qutub Minar, India Gate, Red Fort and Jama Masjid" focusable="false">
+      <circle cx="400" cy="98" r="44" fill="var(--gem-bg)"/>
+      <path d="M0 152 C80 122 160 142 240 130 S400 142 480 126 S660 140 800 122 V178 H0 Z" fill="var(--soft)"/>
+      <g fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round">
+        <path d="M118 44 q5 -5 10 0 q5 -5 10 0"/>
+        <path d="M262 30 q4 -4 8 0 q4 -4 8 0"/>
+        <path d="M640 50 q5 -5 10 0 q5 -5 10 0"/>
+      </g>
+
+      <a href="https://www.google.com/search?tbm=isch&amp;q=Humayun%27s%20Tomb%20Delhi" target="_blank" rel="noopener" class="mon"><g id="humayun">
+        <title>Humayun's Tomb</title>
+        <rect x="20" y="150" width="100" height="26" fill="var(--accent)"/>
+        <rect x="36" y="118" width="68" height="34" fill="var(--accent)"/>
+        <path d="M30 118 Q40 98 50 118 Z" fill="var(--accent)"/>
+        <path d="M90 118 Q100 98 110 118 Z" fill="var(--accent)"/>
+        <path d="M42 118 C42 92 56 80 70 78 C84 80 98 92 98 118 Z" fill="var(--accent)"/>
+        <path d="M70 78 V64" stroke="var(--lunch)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M62 152 V134 Q70 124 78 134 V152 Z" fill="var(--bg)"/>
+      </g></a>
+
+      <a href="https://www.google.com/search?tbm=isch&amp;q=Lotus%20Temple%20Delhi" target="_blank" rel="noopener" class="mon"><g id="lotus">
+        <title>Lotus Temple</title>
+        <rect x="150" y="166" width="100" height="10" fill="var(--accent)"/>
+        <path d="M200 166 C189 148 189 120 200 96 C211 120 211 148 200 166 Z" fill="var(--accent)" opacity="0.45" transform="rotate(-50 200 166)"/>
+        <path d="M200 166 C189 148 189 120 200 96 C211 120 211 148 200 166 Z" fill="var(--accent)" opacity="0.45" transform="rotate(50 200 166)"/>
+        <path d="M200 166 C189 148 189 120 200 96 C211 120 211 148 200 166 Z" fill="var(--accent)" opacity="0.7" transform="rotate(-26 200 166)"/>
+        <path d="M200 166 C189 148 189 120 200 96 C211 120 211 148 200 166 Z" fill="var(--accent)" opacity="0.7" transform="rotate(26 200 166)"/>
+        <path d="M200 166 C189 148 189 120 200 96 C211 120 211 148 200 166 Z" fill="var(--accent)"/>
+      </g></a>
+
+      <a href="https://www.google.com/search?tbm=isch&amp;q=Qutub%20Minar%20Delhi" target="_blank" rel="noopener" class="mon"><g id="qutub">
+        <title>Qutub Minar</title>
+        <path d="M302 176 L313 52 L327 52 L338 176 Z" fill="var(--accent)"/>
+        <rect x="300" y="138" width="40" height="5" fill="var(--accent)"/>
+        <rect x="303" y="110" width="34" height="5" fill="var(--accent)"/>
+        <rect x="305" y="86" width="30" height="5" fill="var(--accent)"/>
+        <rect x="307" y="64" width="26" height="5" fill="var(--accent)"/>
+        <rect x="313" y="44" width="14" height="9" fill="var(--accent)"/>
+        <path d="M314 44 Q320 33 326 44 Z" fill="var(--accent)"/>
+        <path d="M316 140 H324 M317 112 H323 M318 88 H322" stroke="var(--bg)" stroke-width="1.5"/>
+      </g></a>
+
+      <a href="https://www.google.com/search?tbm=isch&amp;q=India%20Gate%20Delhi" target="_blank" rel="noopener" class="mon"><g id="indiagate">
+        <title>India Gate</title>
+        <path d="M415 176 V82 H485 V176 H466 V128 Q450 100 434 128 V176 Z" fill="var(--accent)"/>
+        <rect x="411" y="72" width="78" height="10" fill="var(--accent)"/>
+        <rect x="440" y="64" width="20" height="8" fill="var(--accent)"/>
+        <rect x="421" y="88" width="58" height="3" fill="var(--lunch)"/>
+      </g></a>
+
+      <a href="https://www.google.com/search?tbm=isch&amp;q=Red%20Fort%20Delhi" target="_blank" rel="noopener" class="mon"><g id="redfort">
+        <title>Red Fort</title>
+        <rect x="528" y="128" width="124" height="48" fill="var(--accent)"/>
+        <path d="M528 125 H652" stroke="var(--accent)" stroke-width="6" stroke-dasharray="6 4"/>
+        <path d="M570 176 V104 H610 V176 H598 V140 Q590 128 582 140 V176 Z" fill="var(--accent)"/>
+        <path d="M570 104 Q576 92 582 104 Z" fill="var(--accent)"/>
+        <path d="M598 104 Q604 92 610 104 Z" fill="var(--accent)"/>
+        <path d="M584 104 Q590 86 596 104 Z" fill="var(--accent)"/>
+        <rect x="526" y="108" width="14" height="20" fill="var(--accent)"/>
+        <rect x="640" y="108" width="14" height="20" fill="var(--accent)"/>
+        <path d="M526 108 Q533 97 540 108 Z" fill="var(--accent)"/>
+        <path d="M640 108 Q647 97 654 108 Z" fill="var(--accent)"/>
+        <path d="M590 86 V76" stroke="var(--lunch)" stroke-width="2" stroke-linecap="round"/>
+      </g></a>
+
+      <a href="https://www.google.com/search?tbm=isch&amp;q=Jama%20Masjid%20Delhi" target="_blank" rel="noopener" class="mon"><g id="jama">
+        <title>Jama Masjid</title>
+        <rect x="690" y="140" width="80" height="36" fill="var(--accent)"/>
+        <path d="M696 140 C696 124 702 118 706 118 C710 118 716 124 716 140 Z" fill="var(--accent)"/>
+        <path d="M744 140 C744 124 750 118 754 118 C758 118 764 124 764 140 Z" fill="var(--accent)"/>
+        <path d="M718 140 C718 112 726 104 730 104 C734 104 742 112 742 140 Z" fill="var(--accent)"/>
+        <path d="M730 104 V92" stroke="var(--lunch)" stroke-width="2" stroke-linecap="round"/>
+        <rect x="682" y="84" width="8" height="92" fill="var(--accent)"/>
+        <rect x="770" y="84" width="8" height="92" fill="var(--accent)"/>
+        <path d="M681 84 Q686 72 691 84 Z" fill="var(--accent)"/>
+        <path d="M769 84 Q774 72 779 84 Z" fill="var(--accent)"/>
+        <path d="M722 176 V158 Q730 148 738 158 V176 Z" fill="var(--bg)"/>
+      </g></a>
+
+      <path d="M0 177 H800" stroke="var(--accent)" stroke-width="2"/>
+    </svg>
+    <ul class="skyline-cap" aria-label="Photos of Delhi landmarks">
+      <li><a href="https://www.google.com/search?tbm=isch&amp;q=Humayun%27s%20Tomb%20Delhi" target="_blank" rel="noopener">Humayun&#39;s Tomb</a></li><li><a href="https://www.google.com/search?tbm=isch&amp;q=Lotus%20Temple%20Delhi" target="_blank" rel="noopener">Lotus Temple</a></li><li><a href="https://www.google.com/search?tbm=isch&amp;q=Qutub%20Minar%20Delhi" target="_blank" rel="noopener">Qutub Minar</a></li><li><a href="https://www.google.com/search?tbm=isch&amp;q=India%20Gate%20Delhi" target="_blank" rel="noopener">India Gate</a></li><li><a href="https://www.google.com/search?tbm=isch&amp;q=Red%20Fort%20Delhi" target="_blank" rel="noopener">Red Fort</a></li><li><a href="https://www.google.com/search?tbm=isch&amp;q=Jama%20Masjid%20Delhi" target="_blank" rel="noopener">Jama Masjid</a></li>
+    </ul>
+  </header>
+
+  <section class="explore" id="explore" aria-labelledby="explore-h">
+    <h2 id="explore-h">Going somewhere else?</h2>
+    <p class="sub">Search any city or region to get real photos, a map and its best places. Opened inside Claude, you also get a list of places with a sketch and photo link on each.</p>
+    <div class="explore-row">
+      <div class="field">
+        <label for="dest-q">Destination</label>
+        <input type="text" id="dest-q" placeholder="Jaipur, Rishikesh, Udaipur..." maxlength="60">
+      </div>
+      <button type="button" class="btn" id="btn-dest">Show best places</button>
+      <button type="button" class="btn ghost" id="btn-dest-stop" hidden>Stop</button>
+    </div>
+    <div class="qchips" id="dest-chips" aria-label="Popular destinations"></div>
+    <p class="status" id="dest-status"></p>
+    <div id="dest-out"></div>
+  </section>
+
+  <div class="layout">
+    <form class="panel" id="plan-form" autocomplete="off">
+      <h2>Plan a day</h2>
+      <div class="row2">
+        <div class="field">
+          <label for="f-date">Day</label>
+          <input type="date" id="f-date">
+        </div>
+        <div class="field">
+          <label for="f-start">Leave at</label>
+          <select id="f-start">
+            <option value="360">6:00 am</option>
+            <option value="420">7:00 am</option>
+            <option value="480">8:00 am</option>
+            <option value="540" selected>9:00 am</option>
+            <option value="600">10:00 am</option>
+            <option value="660">11:00 am</option>
+            <option value="720">12:00 pm</option>
+            <option value="780">1:00 pm</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-origin">Starting from</label>
+        <select id="f-origin"></select>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="f-hours">Time available</label>
+          <select id="f-hours">
+            <option value="2">2 hours</option>
+            <option value="3">3 hours</option>
+            <option value="4">4 hours</option>
+            <option value="5" selected>5 hours</option>
+            <option value="6">6 hours</option>
+            <option value="8">8 hours</option>
+            <option value="10">10 hours</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-pace">Pace</label>
+          <select id="f-pace">
+            <option value="relaxed">Relaxed</option>
+            <option value="normal" selected>Steady</option>
+            <option value="packed">Packed</option>
+          </select>
+        </div>
+      </div>
+      <fieldset>
+        <legend>I enjoy</legend>
+        <div class="chips" id="f-interests"></div>
+      </fieldset>
+      <div class="row2">
+        <div class="field">
+          <label for="f-cost">Entry cost</label>
+          <select id="f-cost">
+            <option value="free">Free only</option>
+            <option value="low" selected>Free or low fee</option>
+            <option value="any">Any</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-effort">Walking</label>
+          <select id="f-effort">
+            <option value="1">Easy only</option>
+            <option value="2" selected>Some uneven ground</option>
+            <option value="3">Steep is fine</option>
+          </select>
+        </div>
+      </div>
+      <label class="check"><input type="checkbox" id="f-kids"> Children in the group</label>
+      <label class="check"><input type="checkbox" id="f-elders"> Elders in the group</label>
+      <label class="check"><input type="checkbox" id="f-lunch" checked> Include a lunch break</label>
+      <label class="check"><input type="checkbox" id="f-gems" checked> Lesser-known places first</label>
+    </form>
+
+    <section class="results" aria-live="polite">
+      <div id="out"></div>
+
+      <section class="ai" id="ai" hidden>
+        <h2>Day guide, written by Claude</h2>
+        <div class="ai-row">
+          <div class="field">
+            <label for="f-lang">Language</label>
+            <select id="f-lang">
+              <option value="English">English</option>
+              <option value="Hindi (Devanagari script)">हिन्दी</option>
+            </select>
+          </div>
+          <button type="button" class="btn" id="btn-guide">Write my day guide</button>
+          <button type="button" class="btn ghost" id="btn-stop" hidden>Stop</button>
+        </div>
+        <p class="status" id="guide-status"></p>
+        <div class="out" id="guide-out"></div>
+
+        <div class="ask">
+          <h3>Ask the local guide</h3>
+          <div class="ask-grid">
+            <div class="field" style="margin:0">
+              <label for="ask-stop">About</label>
+              <select id="ask-stop"></select>
+            </div>
+            <div class="field" style="margin:0">
+              <label for="ask-q">Your question</label>
+              <input type="text" id="ask-q" placeholder="What should I look for? Is it fine for my parents?" maxlength="300">
+            </div>
+            <button type="button" class="btn" id="btn-ask">Ask</button>
+          </div>
+          <div class="qchips" id="qchips" aria-label="Quick questions"></div>
+          <p class="status" id="ask-status"></p>
+          <div class="out" id="ask-out"></div>
+        </div>
+      </section>
+      <p class="fine" id="ai-absent" hidden>The written guide, destination search and Q&amp;A appear when this page is opened inside Claude.</p>
+
+      <p class="fine">Travel times are estimates: about 27 km/h in normal NCR traffic, slower in weekday rush hours, quicker at weekends, plus a few minutes for parking. Sunrise and sunset are approximate for Delhi. Opening days, hours and fees change, so confirm before you leave. Map links open a search for the place.</p>
+    </section>
+  </div>
+</div>
+
+<script>
+/* ---------- Data and planner (pure, no DOM) ---------- */
+const INTERESTS = [
+  { id: "heritage", label: "Heritage" },
+  { id: "nature", label: "Nature & birds" },
+  { id: "food", label: "Food" },
+  { id: "crafts", label: "Crafts & markets" },
+  { id: "spiritual", label: "Spiritual" },
+  { id: "photo", label: "Photography" }
+];
+const TAG_LABEL = Object.fromEntries(INTERESTS.map(i => [i.id, i.label]));
+
+const ORIGINS = [
+  { id: "old", group: "Gurugram", name: "Old Gurugram", lat: 28.4595, lng: 77.0266 },
+  { id: "cyber", group: "Gurugram", name: "Cyber Hub / DLF Phase 3", lat: 28.4950, lng: 77.0890 },
+  { id: "golf", group: "Gurugram", name: "Golf Course Road", lat: 28.4400, lng: 77.1000 },
+  { id: "sohna", group: "Gurugram", name: "Sohna Road", lat: 28.4126, lng: 77.0430 },
+  { id: "dwarka", group: "Gurugram", name: "Dwarka Expressway", lat: 28.4700, lng: 76.9800 },
+  { id: "huda", group: "Gurugram", name: "HUDA City Centre", lat: 28.4595, lng: 77.0724 },
+  { id: "mgroad", group: "Gurugram", name: "MG Road / Sikanderpur", lat: 28.4807, lng: 77.0930 },
+  { id: "udyog", group: "Gurugram", name: "Udyog Vihar", lat: 28.5060, lng: 77.0820 },
+  { id: "sushant", group: "Gurugram", name: "Sushant Lok", lat: 28.4600, lng: 77.0550 },
+  { id: "palamvihar", group: "Gurugram", name: "Palam Vihar", lat: 28.5080, lng: 77.0250 },
+  { id: "manesar", group: "Gurugram", name: "Manesar", lat: 28.3540, lng: 76.9360 },
+  { id: "cp", group: "Delhi", name: "Connaught Place", lat: 28.6315, lng: 77.2167 },
+  { id: "indiagate", group: "Delhi", name: "India Gate", lat: 28.6129, lng: 77.2295 },
+  { id: "paharganj", group: "Delhi", name: "Paharganj", lat: 28.6430, lng: 77.2130 },
+  { id: "karolbagh", group: "Delhi", name: "Karol Bagh", lat: 28.6510, lng: 77.1900 },
+  { id: "saket", group: "Delhi", name: "Saket", lat: 28.5245, lng: 77.2066 },
+  { id: "hauzkhasv", group: "Delhi", name: "Hauz Khas Village", lat: 28.5535, lng: 77.1945 },
+  { id: "vasantkunj", group: "Delhi", name: "Vasant Kunj", lat: 28.5200, lng: 77.1580 },
+  { id: "gk", group: "Delhi", name: "Greater Kailash", lat: 28.5483, lng: 77.2386 },
+  { id: "lajpat", group: "Delhi", name: "Lajpat Nagar", lat: 28.5700, lng: 77.2430 },
+  { id: "nehruplace", group: "Delhi", name: "Nehru Place", lat: 28.5490, lng: 77.2530 },
+  { id: "janakpuri", group: "Delhi", name: "Janakpuri", lat: 28.6219, lng: 77.0878 },
+  { id: "dwarkadelhi", group: "Delhi", name: "Dwarka, Delhi", lat: 28.5823, lng: 77.0500 },
+  { id: "rohini", group: "Delhi", name: "Rohini", lat: 28.7400, lng: 77.1200 },
+  { id: "igi", group: "Airport, stations and bus terminals", name: "IGI Airport (Terminal 3)", lat: 28.5562, lng: 77.1000 },
+  { id: "ndls", group: "Airport, stations and bus terminals", name: "New Delhi Railway Station", lat: 28.6425, lng: 77.2190 },
+  { id: "olddelhistn", group: "Airport, stations and bus terminals", name: "Old Delhi Railway Station", lat: 28.6606, lng: 77.2278 },
+  { id: "nzmstn", group: "Airport, stations and bus terminals", name: "Hazrat Nizamuddin Railway Station", lat: 28.5880, lng: 77.2540 },
+  { id: "kashmere", group: "Airport, stations and bus terminals", name: "Kashmere Gate ISBT", lat: 28.6675, lng: 77.2290 },
+  { id: "anandvihar", group: "Airport, stations and bus terminals", name: "Anand Vihar ISBT", lat: 28.6469, lng: 77.3160 },
+  { id: "gurgaonstn", group: "Airport, stations and bus terminals", name: "Gurugram Railway Station", lat: 28.4630, lng: 77.0280 },
+  { id: "noida18", group: "Noida, Faridabad and Ghaziabad", name: "Noida Sector 18", lat: 28.5700, lng: 77.3220 },
+  { id: "faridabad", group: "Noida, Faridabad and Ghaziabad", name: "Faridabad", lat: 28.4100, lng: 77.3100 },
+  { id: "ghaziabad", group: "Noida, Faridabad and Ghaziabad", name: "Ghaziabad (Vaishali)", lat: 28.6450, lng: 77.3400 }
+];
+
+const COST_RANK = { free: 0, low: 1, med: 2 };
+const COST_LABEL = { free: "Free entry", low: "Low entry fee", med: "Ticketed" };
+const EFFORT_LABEL = { 1: "Easy walk", 2: "Some uneven ground", 3: "Steep or rough" };
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+/* Approximate Delhi [sunrise, sunset] in minutes after midnight, by month. */
+const SUN = {
+  1: [430, 1065], 2: [420, 1090], 3: [395, 1105], 4: [365, 1130], 5: [335, 1150], 6: [325, 1165],
+  7: [335, 1160], 8: [355, 1140], 9: [375, 1105], 10: [395, 1075], 11: [415, 1050], 12: [430, 1045]
+};
+
+const SEASON_NOTE = {
+  1: "Cold, often foggy mornings. Start a little later and carry a jacket. Good month for birds.",
+  2: "Pleasant weather. Winter birds linger at the wetlands and the Surajkund Crafts Mela runs this month.",
+  3: "Cool mornings and warm afternoons. Plan outdoor stops before noon as the heat builds.",
+  4: "Heat builds quickly. Keep to early mornings, carry water and add shade or indoor stops.",
+  5: "Very hot. Go early, finish by late morning and choose shaded or indoor places.",
+  6: "Very hot and dusty before the monsoon. Early mornings only, with plenty of water.",
+  7: "Monsoon. Roads can waterlog, so allow extra drive time. The Aravallis are at their greenest.",
+  8: "Monsoon. Allow extra drive time, and take care on wet steps and stepwell edges.",
+  9: "Monsoon is easing and it is humid. Lakes are full and the hills are green.",
+  10: "Cooler and clearer. The best months for walking outdoors are beginning.",
+  11: "Pleasant days and cool evenings. Migratory birds are arriving. Air quality can be poor, so check the AQI and carry a mask if you are sensitive.",
+  12: "Cold, often foggy mornings and early sunsets. Check the AQI before outdoor stops."
+};
+
+const PLACES = [
+  { id: "sultanpur", name: "Sultanpur National Park", area: "Sultanpur, Gurugram", lat: 28.4600, lng: 76.8900,
+    tags: ["nature","photo"], visit: 120, cost: "low", effort: 1, kids: true, months: [10,11,12,1,2,3], gem: 2, sun: true, best: "morning",
+    blurb: "A wetland sanctuary west of Gurugram. In winter, migratory waterbirds join the resident species, and weekday mornings are the quietest time.",
+    tip: "Arrive at opening time, wear muted colours and carry water. Binoculars make the visit.",
+    note: "Entry rules, vehicle access and hours change. Check before you leave." },
+  { id: "farrukhnagar", name: "Farrukhnagar old town", area: "Farrukhnagar, Gurugram", lat: 28.4300, lng: 76.8200,
+    tags: ["heritage","photo"], visit: 90, cost: "free", effort: 2, kids: true, elders: false, months: null, gem: 3, sun: true,
+    blurb: "A small walled town founded in the early 1700s by Faujdar Khan. Its lanes hold an old stepwell, a mosque and the Sheesh Mahal.",
+    tip: "Walk the lanes slowly and ask residents for directions. Ask before photographing anyone's home.",
+    note: "Some monuments are in poor repair or locked. Treat it as an exploring morning, not a managed site." },
+  { id: "badshahpur", name: "Badshahpur Baoli", area: "Badshahpur, Gurugram", lat: 28.4020, lng: 77.0560,
+    tags: ["heritage"], visit: 30, cost: "free", effort: 2, kids: true, elders: false, months: null, gem: 3, sun: true,
+    blurb: "A stepwell tucked inside Badshahpur village, a reminder of how water was stored in older Gurugram.",
+    tip: "Keep it as a short add-on. Mind loose stones and steep steps.",
+    note: "Access and upkeep vary. Ask locally whether the gate is open." },
+  { id: "sheetla", name: "Sheetla Mata Mandir", area: "Old Gurugram", lat: 28.4580, lng: 77.0180,
+    tags: ["spiritual"], visit: 45, cost: "free", effort: 1, kids: true, months: null, gem: 1,
+    blurb: "Gurugram's best-known temple, tied to a long local tradition, with a large fair in the Hindu month of Chaitra (around March and April).",
+    tip: "Dress modestly and remove footwear. Mondays and festival days are very crowded.",
+    note: "" },
+  { id: "damdama", name: "Damdama Lake", area: "Sohna Road", lat: 28.3200, lng: 77.0750,
+    tags: ["nature","photo"], visit: 90, cost: "low", effort: 1, kids: true, months: null, gem: 2, best: "evening",
+    blurb: "A lake set among Aravalli hills, good for sunset light and a slow walk.",
+    tip: "Weekdays are calmer. Carry your own water and take your rubbish back.",
+    note: "Some activities and entry rules are run by private operators. Check on the day." },
+  { id: "sohna", name: "Sohna sulphur springs", area: "Sohna", lat: 28.2300, lng: 77.0800,
+    tags: ["nature"], visit: 60, cost: "low", effort: 1, kids: true, months: null, gem: 2,
+    blurb: "Natural sulphur hot springs near Sohna town, set at the foot of low Aravalli hills.",
+    tip: "Carry a towel and a change of clothes. The sulphur smell is normal.",
+    note: "Facilities are basic and conditions vary. Confirm locally before planning around a dip." },
+  { id: "basai", name: "Basai Wetland", area: "Basai, Gurugram", lat: 28.4050, lng: 76.9850,
+    tags: ["nature","photo"], visit: 90, cost: "free", effort: 2, kids: true, elders: false, months: [11,12,1,2,3], gem: 3, sun: true, best: "morning",
+    blurb: "A seasonal wetland on Gurugram's southwest edge, ringed by farmland and villages and loved by local birders.",
+    tip: "Go at first light and stay on village paths. Ask a local birding group about current access.",
+    note: "Water levels and access change through the year." },
+  { id: "abp", name: "Aravalli Biodiversity Park", area: "Gurugram", lat: 28.4700, lng: 77.1000,
+    tags: ["nature","photo"], visit: 90, cost: "free", effort: 2, kids: true, months: null, gem: 3, sun: true, best: "morning",
+    blurb: "A restored patch of Aravalli forest in Gurugram, planted with native species and visited for birds and quiet walks.",
+    tip: "Go in the morning, wear closed shoes and carry water.",
+    note: "Entry and guided walks are managed by the park's organisers. Confirm access and timings first." },
+  { id: "leisure", name: "Leisure Valley Park", area: "Gurugram", lat: 28.4660, lng: 77.0690,
+    tags: ["nature"], visit: 60, cost: "free", effort: 1, kids: true, months: null, gem: 1, best: "morning",
+    blurb: "A long green belt through the city with walking paths and gardens, popular for morning walks.",
+    tip: "Go early on a weekday for the quietest paths.",
+    note: "" },
+  { id: "mehrauli", name: "Mehrauli Archaeological Park", area: "Mehrauli, Delhi", lat: 28.5195, lng: 77.1850,
+    tags: ["heritage","photo"], visit: 120, cost: "free", effort: 2, kids: true, elders: false, months: null, gem: 2, sun: true,
+    blurb: "An open park of monuments spanning roughly a thousand years, including Jamali Kamali, Rajon ki Baoli and many tombs among the trees.",
+    tip: "Start at the stepwell and walk through to Jamali Kamali. Wear sturdy shoes and carry water.",
+    note: "Parts are overgrown or unlit. Stay on clear paths and visit in daylight." },
+  { id: "qutub", name: "Qutub Minar", area: "Mehrauli, Delhi", lat: 28.5245, lng: 77.1855,
+    tags: ["heritage","photo"], visit: 90, cost: "low", effort: 1, kids: true, months: null, gem: 1, sun: true,
+    blurb: "A red sandstone victory tower of about 73 metres from the 13th century, a UNESCO World Heritage Site, with the Iron Pillar and early mosque ruins around it.",
+    tip: "Go on a weekday morning. Mehrauli Archaeological Park is a short walk away.",
+    note: "Ticketed, and fees differ for Indian citizens and foreign visitors." },
+  { id: "sultanghari", name: "Sultan Ghari tomb", area: "Vasant Kunj, Delhi", lat: 28.5280, lng: 77.1430,
+    tags: ["heritage","spiritual"], visit: 45, cost: "free", effort: 2, kids: true, months: null, gem: 3, sun: true,
+    blurb: "The tomb of Nasiruddin Mahmud, built around 1231 and often described as the oldest Islamic mausoleum in India, inside a fortified enclosure.",
+    tip: "A short, atmospheric stop. Remove footwear near the tomb chamber and watch the uneven steps.",
+    note: "Check visiting days and hours. It is easy to arrive and find it closed." },
+  { id: "sanjayvan", name: "Sanjay Van", area: "Vasant Kunj, Delhi", lat: 28.5290, lng: 77.1600,
+    tags: ["nature","photo"], visit: 90, cost: "free", effort: 2, kids: true, elders: false, months: null, gem: 3, sun: true, best: "morning",
+    blurb: "A large wooded Aravalli forest park in south Delhi, with trails, birds and a few old ruins.",
+    tip: "Go in the morning and stay on marked trails. Do not walk alone near dusk.",
+    note: "Parts are quiet and thinly staffed. Confirm access and timings before you leave." },
+  { id: "khirki", name: "Khirki Masjid", area: "Khirki, Delhi", lat: 28.5286, lng: 77.2175,
+    tags: ["heritage","photo"], visit: 40, cost: "free", effort: 1, kids: true, months: null, gem: 3, sun: true,
+    blurb: "A 14th-century mosque built under Khan-i-Jahan Junan Shah, known for its covered courtyard and the window screens that give it its name.",
+    tip: "Look up at the pierced stone screens. It sits in a busy neighbourhood, so park a little away.",
+    note: "The surrounding lanes are narrow and access can be uneven." },
+  { id: "tughlaqabad", name: "Tughlaqabad Fort", area: "South Delhi", lat: 28.5130, lng: 77.2640,
+    tags: ["heritage","photo"], visit: 120, cost: "low", effort: 3, kids: false, elders: false, months: [10,11,12,1,2,3], gem: 2, sun: true, best: "morning",
+    blurb: "A massive 14th-century fort on a rocky hill, with long ramparts, underground passages and wide views over south Delhi.",
+    tip: "Start early, wear shoes with grip and stay with your group.",
+    note: "Steep and uneven. Not suited to small children or weak knees." },
+  { id: "humayun", name: "Humayun's Tomb", area: "Nizamuddin East, Delhi", lat: 28.5933, lng: 77.2507,
+    tags: ["heritage","photo"], visit: 90, cost: "low", effort: 1, kids: true, months: null, gem: 1, sun: true,
+    blurb: "The 16th-century garden tomb of the Mughal emperor Humayun, a UNESCO World Heritage Site and a forerunner of the Taj Mahal's design.",
+    tip: "Go in the first hour or late afternoon for softer light. Sunder Nursery is next door.",
+    note: "Ticketed, and fees differ for Indian citizens and foreign visitors." },
+  { id: "sunder", name: "Sunder Nursery", area: "Nizamuddin, Delhi", lat: 28.5934, lng: 77.2437,
+    tags: ["heritage","nature","photo"], visit: 120, cost: "low", effort: 1, kids: true, months: null, gem: 1, sun: true,
+    blurb: "A restored garden complex with 16th-century tombs, lawns and many old trees, right beside Humayun's Tomb.",
+    tip: "Weekday mornings are calm. Pair it with Humayun's Tomb if you have time.",
+    note: "Ticketed, and hours vary by season." },
+  { id: "lodhi", name: "Lodhi Garden", area: "Lodhi Road, Delhi", lat: 28.5931, lng: 77.2197,
+    tags: ["heritage","nature","photo"], visit: 75, cost: "free", effort: 1, kids: true, months: null, gem: 1, best: "morning",
+    blurb: "A large park of 15th and 16th-century tombs from the Sayyid and Lodhi dynasties among old trees, a favourite for morning walks.",
+    tip: "Go early on a weekday and look for the Bara Gumbad and Shish Gumbad.",
+    note: "" },
+  { id: "safdarjung", name: "Safdarjung's Tomb", area: "Safdarjung, Delhi", lat: 28.5893, lng: 77.2111,
+    tags: ["heritage","photo"], visit: 45, cost: "low", effort: 1, kids: true, months: null, gem: 2, sun: true,
+    blurb: "An 18th-century Mughal garden tomb, among the last of its kind in Delhi, built for Safdarjung, a nawab of Awadh.",
+    tip: "Late afternoon is quiet, and the garden paths frame the dome well.",
+    note: "Ticketed. Check hours before you go." },
+  { id: "purana", name: "Purana Qila", area: "Mathura Road, Delhi", lat: 28.6096, lng: 77.2437,
+    tags: ["heritage","photo"], visit: 90, cost: "low", effort: 2, kids: true, months: null, gem: 1, sun: true,
+    blurb: "A large 16th-century fort linked with Sher Shah Suri and Humayun, with a mosque, a pavilion called Sher Mandal and a lake outside the walls.",
+    tip: "Walk to Sher Mandal and the Qila-i-Kuhna mosque, then rest by the lake.",
+    note: "Ticketed. Check hours before you go." },
+  { id: "agrasen", name: "Agrasen ki Baoli", area: "Connaught Place, Delhi", lat: 28.6258, lng: 77.2250,
+    tags: ["heritage","photo"], visit: 40, cost: "free", effort: 2, kids: true, elders: false, months: null, gem: 1, sun: true,
+    blurb: "A long stepwell hidden among tall buildings near Connaught Place, known for its repeating arches and the light that falls on them.",
+    tip: "Go on a weekday morning to avoid photo-shoot crowds. The steps are steep.",
+    note: "" },
+  { id: "lotus", name: "Lotus Temple", area: "Bahapur, Delhi", lat: 28.5535, lng: 77.2588,
+    tags: ["spiritual","photo"], visit: 60, cost: "free", effort: 1, kids: true, closed: [1], months: null, gem: 1, sun: true,
+    blurb: "A Bahá'í House of Worship shaped like a lotus, open to people of all faiths, with a quiet prayer hall.",
+    tip: "Keep silent in the hall. Queues are shortest on weekday mornings.",
+    note: "Closed on Mondays. Photography is limited inside." },
+  { id: "redfort", name: "Red Fort", area: "Old Delhi", lat: 28.6562, lng: 77.2410,
+    tags: ["heritage","photo"], visit: 120, cost: "low", effort: 1, kids: true, closed: [1], months: null, gem: 1, sun: true,
+    blurb: "The 17th-century Mughal fort of Shah Jahan, a UNESCO World Heritage Site, with palaces, halls and the Lahori Gate.",
+    tip: "Go early and combine it with Jama Masjid and the food lanes of Chandni Chowk.",
+    note: "Closed on Mondays. Security checks cause queues, so travel light." },
+  { id: "jama", name: "Jama Masjid", area: "Old Delhi", lat: 28.6507, lng: 77.2334,
+    tags: ["spiritual","heritage","photo"], visit: 60, cost: "free", effort: 2, kids: true, months: null, gem: 1,
+    blurb: "One of India's largest mosques, built in the 17th century by Shah Jahan, with a vast courtyard in the middle of Old Delhi.",
+    tip: "Dress modestly and cover your head if asked. Avoid prayer times, especially Friday afternoon.",
+    note: "Visitor timings around prayers and any camera fees vary. Confirm on the day." },
+  { id: "chandni", name: "Old Delhi food lanes", area: "Chandni Chowk, Delhi", lat: 28.6560, lng: 77.2300,
+    tags: ["food","heritage"], visit: 120, cost: "low", effort: 2, kids: true, months: null, gem: 1, opens: 600,
+    blurb: "Old Delhi's narrow lanes, including Paranthe Wali Gali, are a long-standing way to taste the city's street food.",
+    tip: "Go by metro, go hungry and carry small notes. Avoid the midday crush.",
+    note: "Crowded and narrow. Keep bags in front and stay close to children." },
+  { id: "dillihaat", name: "Dilli Haat INA", area: "INA, Delhi", lat: 28.5740, lng: 77.2090,
+    tags: ["crafts","food"], visit: 90, cost: "low", effort: 1, kids: true, months: null, gem: 1, opens: 630,
+    blurb: "A craft and food market where stalls sell regional handloom, handicrafts and snacks from states across India.",
+    tip: "Compare prices before buying crafts. Some stalls expect a little bargaining, and the food stalls make a good lunch.",
+    note: "Ticketed entry. Check timings and any ongoing fairs." },
+  { id: "surajkund", name: "Surajkund Crafts Mela", area: "Surajkund, Faridabad", lat: 28.4690, lng: 77.2830,
+    tags: ["crafts","food"], visit: 180, cost: "med", effort: 1, kids: true, months: [2], gem: 1, opens: 660,
+    blurb: "A large crafts fair with artisans from many Indian states and abroad, held every February.",
+    tip: "Go on a weekday, carry cash for small stalls and wear comfortable shoes.",
+    note: "Dates are announced each year, usually in the first half of February." },
+  { id: "fivesenses", name: "Garden of Five Senses", area: "Saidulajab, Delhi", lat: 28.5120, lng: 77.2000,
+    tags: ["nature","photo"], visit: 90, cost: "low", effort: 1, kids: true, months: null, gem: 2,
+    blurb: "A landscaped park with sculptures, a bamboo court and themed gardens, made for slow walks.",
+    tip: "Winter weekdays are best. Look for the sculpture trail near the entrance.",
+    note: "Events can close sections of the park." },
+  { id: "hauzkhas", name: "Hauz Khas reservoir and ruins", area: "Hauz Khas, Delhi", lat: 28.5494, lng: 77.1946,
+    tags: ["heritage","food","photo"], visit: 90, cost: "low", effort: 1, kids: true, months: null, gem: 1, best: "evening",
+    blurb: "A medieval reservoir and ruined madrasa complex with tombs, beside a lively cafe lane.",
+    tip: "Go for late afternoon light over the water, then eat in the village.",
+    note: "" },
+  { id: "asola", name: "Asola Bhatti Wildlife Sanctuary", area: "Delhi–Haryana border", lat: 28.4650, lng: 77.2400,
+    tags: ["nature","photo"], visit: 120, cost: "low", effort: 2, kids: true, months: null, gem: 2, sun: true, best: "morning",
+    blurb: "Dry Aravalli scrub forest on the Delhi–Haryana border, known for birds and nilgai.",
+    tip: "Keep to marked paths and carry water.",
+    note: "Entry rules and permits apply. Confirm timings with the forest authorities." },
+  { id: "okhla", name: "Okhla Bird Sanctuary", area: "Noida", lat: 28.5550, lng: 77.3200,
+    tags: ["nature","photo"], visit: 120, cost: "low", effort: 1, kids: true, months: [10,11,12,1,2,3], gem: 2, sun: true, best: "morning",
+    blurb: "A wetland on the Yamuna on the Delhi–Noida edge, with migratory waterbirds in winter.",
+    tip: "Go in the first hours of the day with binoculars and a water bottle.",
+    note: "Confirm entry rules and timings. It is a long drive from Gurugram." },
+  { id: "nizamuddin", name: "Nizamuddin Dargah", area: "Nizamuddin, Delhi", lat: 28.5890, lng: 77.2420,
+    tags: ["spiritual","food","heritage"], visit: 90, cost: "free", effort: 1, kids: true, months: null, gem: 2, best: "evening", thu: true,
+    blurb: "The shrine of the Sufi saint Nizamuddin Auliya, in a dense old neighbourhood. Thursday evenings bring qawwali after sunset.",
+    tip: "Cover your head and remove shoes. Thursdays are crowded, so arrive before sunset.",
+    note: "Photography may be restricted inside. Follow the volunteers' guidance." },
+  { id: "banglasahib", name: "Gurudwara Bangla Sahib", area: "Connaught Place, Delhi", lat: 28.6264, lng: 77.2090,
+    tags: ["spiritual","food"], visit: 60, cost: "free", effort: 1, kids: true, months: null, gem: 1,
+    blurb: "A major gurdwara in central Delhi where a free community meal (langar) is served to every visitor.",
+    tip: "Cover your head, remove shoes and wash your feet where provided. Take only what you can eat.",
+    note: "" }
+];
+
+function hav(a, b) {
+  const R = 6371, rad = Math.PI / 180;
+  const dLat = (b.lat - a.lat) * rad, dLng = (b.lng - a.lng) * rad;
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(s));
+}
+function speedAt(min, dow) {
+  const weekday = dow >= 1 && dow <= 5;
+  if (weekday && ((min >= 480 && min <= 630) || (min >= 1020 && min <= 1200))) return { v: 19, rush: true };
+  return { v: (dow === 0 || dow === 6) ? 31 : 27, rush: false };
+}
+function travelAt(a, b, at, dow) {
+  const km = hav(a, b) * 1.35;
+  const sp = speedAt(at, dow);
+  return { km, min: Math.round(km / sp.v * 60) + 8, rush: sp.rush };
+}
+function rnd(s) {
+  let t = (s + 0x6D2B79F5) | 0;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+}
+function t12(m) {
+  m = ((Math.round(m) % 1440) + 1440) % 1440;
+  let h = Math.floor(m / 60); const mm = m % 60;
+  const ap = h >= 12 ? "pm" : "am";
+  h = h % 12 || 12;
+  return h + ":" + String(mm).padStart(2, "0") + " " + ap;
+}
+function dur(min) {
+  if (min < 60) return min + " min";
+  const h = Math.floor(min / 60), r = min % 60;
+  return h + " h" + (r ? " " + r + " min" : "");
+}
+function monthRange(ms) {
+  if (ms.length === 1) return MONTHS[ms[0] - 1];
+  const start = ms.find(m => !ms.includes(((m + 10) % 12) + 1));
+  const end = ms.find(m => !ms.includes((m % 12) + 1));
+  return MONTHS[start - 1].slice(0, 3) + " to " + MONTHS[end - 1].slice(0, 3);
+}
+
+function planDay(o) {
+  const origin = ORIGINS.find(x => x.id === o.originId) || ORIGINS[0];
+  const dow = o.dow == null ? 3 : o.dow;
+  const sun = SUN[o.month] || SUN[11];
+  const sunrise = sun[0], sunset = sun[1];
+  const pace = o.pace || "normal";
+  const paceMul = { relaxed: 1.3, normal: 1, packed: 0.75 }[pace];
+  const maxStops = { relaxed: 4, normal: 6, packed: 8 }[pace];
+  const allowedCost = { free: 0, low: 1, any: 2 }[o.cost];
+  const effortCap = o.elders ? Math.min(o.effort, 2) : o.effort;
+  const skip = new Set(o.skip || []);
+  const pool = [], skippedSeason = [], closedToday = [];
+
+  PLACES.forEach((p, idx) => {
+    if (skip.has(p.id)) return;
+    if (COST_RANK[p.cost] > allowedCost) return;
+    if (p.effort > effortCap) return;
+    if (o.kids && !p.kids) return;
+    if (o.elders && p.elders === false) return;
+    const matched = o.interests.length ? p.tags.filter(t => o.interests.includes(t)) : [];
+    if (o.interests.length && !matched.length) return;
+    if (p.months && !p.months.includes(o.month)) { skippedSeason.push(p); return; }
+    if (p.closed && p.closed.includes(dow)) { closedToday.push(p); return; }
+    const base = o.interests.length ? matched.length * 3 : 3;
+    const jitter = o.seed ? rnd(o.seed * 997 + idx) * 2.4 : 0;
+    const score = base + (p.gem - 1) * (o.hiddenFirst ? 1.5 : 0.4) + (p.months ? 1.2 : 0) + jitter;
+    pool.push({ p, score, matched });
+  });
+
+  let cur = origin, now = o.startMin, totalKm = 0, lunchDone = !o.lunch, waitMin = 0;
+  const limit = o.startMin + o.budgetMin;
+  const items = [], stops = [], left = pool.slice();
+
+  while (stops.length < maxStops && left.length) {
+    if (!lunchDone && now >= 750 && now <= 930) {
+      if (now + 45 + travelAt(cur, origin, now + 45, dow).min <= limit) { items.push({ kind: "lunch", at: now, min: 45 }); now += 45; }
+      lunchDone = true;
+    }
+    let best = null, bestVal = -Infinity, bestIdx = -1;
+    left.forEach((c, i) => {
+      const p = c.p;
+      const tr = travelAt(cur, p, now, dow);
+      let arrive = now + tr.min, wait = 0;
+      const openAt = Math.max(p.opens || 0, p.sun ? sunrise : 0);
+      if (arrive < openAt) { wait = openAt - arrive; arrive = openAt; }
+      if (wait > 45) return;
+      const visit = Math.max(20, Math.round(p.visit * paceMul / 5) * 5);
+      const depart = arrive + visit;
+      if (p.sun && depart > sunset) return;
+      const back = travelAt(p, origin, depart, dow);
+      if (depart + back.min > limit) return;
+      const lunchHere = !lunchDone && p.tags.includes("food") && arrive >= 690 && arrive <= 930;
+      let val = c.score + visit / 60 - tr.min / 25 - wait / 60;
+      if (p.best === "morning" && arrive <= 690) val += 1.4;
+      if (p.best === "evening" && arrive >= sunset - 150) val += 1.4;
+      if (p.thu && dow === 4) val += 1.2;
+      if (lunchHere) val += 1;
+      if (val > bestVal) { best = { c, tr, arrive, wait, visit, depart, lunchHere }; bestVal = val; bestIdx = i; }
+    });
+    if (!best) break;
+    const p = best.c.p;
+    const reasons = [];
+    if (best.c.matched.length) reasons.push("Matches " + best.c.matched.map(t => TAG_LABEL[t]).join(", "));
+    if (p.gem === 3) reasons.push("a lesser-known place");
+    if (p.months) reasons.push("in season");
+    if (p.best === "morning" && best.arrive <= 690) reasons.push("timed for a quiet morning");
+    if (p.best === "evening" && best.arrive >= sunset - 150) reasons.push("timed for evening light");
+    if (p.thu && dow === 4) reasons.push("it is Thursday, the day of qawwali after sunset");
+    const st = {
+      kind: "stop", place: p, matched: best.c.matched, travelMin: best.tr.min, travelKm: best.tr.km, rush: best.tr.rush,
+      arrive: best.arrive, depart: best.depart, visit: best.visit, wait: best.wait, lunchHere: best.lunchHere, reasons
+    };
+    items.push(st); stops.push(st);
+    if (best.lunchHere) lunchDone = true;
+    waitMin += best.wait;
+    totalKm += best.tr.km;
+    now = best.depart;
+    cur = p;
+    left.splice(bestIdx, 1);
+  }
+
+  while (items.length && items[items.length - 1].kind === "lunch") { now -= items.pop().min; }
+  let back = null, endAt = o.startMin, driveMin = 0, visitMin = 0, lunchMin = 0;
+  if (stops.length) {
+    const b = travelAt(cur, origin, now, dow);
+    totalKm += b.km;
+    back = { min: b.min, km: b.km, rush: b.rush, at: now + b.min };
+    endAt = back.at;
+    driveMin = stops.reduce((s, x) => s + x.travelMin, 0) + b.min;
+    visitMin = stops.reduce((s, x) => s + x.visit, 0);
+    lunchMin = items.filter(x => x.kind === "lunch").reduce((s, x) => s + x.min, 0);
+  }
+  return { origin, items, stops, back, endAt, totalKm, driveMin, visitMin, lunchMin, waitMin, skippedSeason, closedToday, sunrise, sunset, dow };
+}
+if (typeof module !== "undefined") module.exports = { planDay, PLACES, ORIGINS, t12 };
+</script>
+
+<script>
+/* ---------- Interface ---------- */
+const $ = id => document.getElementById(id);
+const form = $("plan-form"), outEl = $("out");
+let lastPlan = null, sampleFn = null, ctl = null;
+const state = { seed: 0, skip: [] };
+const PREF_KEY = "agc-prefs-v2";
+const THEME_KEY = "agc-theme";
+const QUESTIONS = ["What should I look for?", "Is it fine for elders?", "Best time of day to visit?", "What should I wear?"];
+
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+}
+function store(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage unavailable */ } }
+function recall(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+
+function todayISO() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function parseISO(iso) {
+  const [y, m, d] = (iso || "").split("-").map(Number);
+  if (!y || !m || !d) return null;
+  return { y, m, d, dow: new Date(y, m - 1, d).getDay() };
+}
+
+function buildForm() {
+  $("f-date").value = todayISO();
+  const groups = {};
+  ORIGINS.forEach(o => {
+    if (!groups[o.group]) { const g = document.createElement("optgroup"); g.label = o.group; groups[o.group] = g; $("f-origin").append(g); }
+    const op = el("option", null, o.name); op.value = o.id; groups[o.group].append(op);
+  });
+  INTERESTS.forEach(i => {
+    const lab = el("label", "chip");
+    const inp = document.createElement("input");
+    inp.type = "checkbox"; inp.value = i.id; inp.id = "int-" + i.id;
+    if (i.id === "heritage" || i.id === "nature") inp.checked = true;
+    lab.append(inp, el("span", null, i.label));
+    $("f-interests").append(lab);
+  });
+  QUESTIONS.forEach(q => {
+    const b = el("button", null, q); b.type = "button";
+    b.addEventListener("click", () => { $("ask-q").value = q; askGuide(); });
+    $("qchips").append(b);
+  });
+}
+
+function savePrefs() {
+  const p = {
+    origin: $("f-origin").value, start: $("f-start").value, hours: $("f-hours").value, pace: $("f-pace").value,
+    cost: $("f-cost").value, effort: $("f-effort").value,
+    kids: $("f-kids").checked, elders: $("f-elders").checked, lunch: $("f-lunch").checked, gems: $("f-gems").checked,
+    interests: INTERESTS.filter(i => $("int-" + i.id).checked).map(i => i.id)
+  };
+  store(PREF_KEY, JSON.stringify(p));
+}
+function loadPrefs() {
+  const raw = recall(PREF_KEY);
+  if (!raw) return;
+  let p; try { p = JSON.parse(raw); } catch (e) { return; }
+  if (!p || typeof p !== "object") return;
+  const setSel = (id, v) => { const s = $(id); if (v != null && [...s.options].some(o => o.value === String(v))) s.value = String(v); };
+  setSel("f-origin", p.origin); setSel("f-start", p.start); setSel("f-hours", p.hours); setSel("f-pace", p.pace);
+  setSel("f-cost", p.cost); setSel("f-effort", p.effort);
+  ["kids", "elders", "lunch", "gems"].forEach(k => { if (typeof p[k] === "boolean") $("f-" + k).checked = p[k]; });
+  if (Array.isArray(p.interests)) INTERESTS.forEach(i => { $("int-" + i.id).checked = p.interests.includes(i.id); });
+}
+
+function readForm() {
+  const dv = $("f-date").value || todayISO();
+  const pd = parseISO(dv) || parseISO(todayISO());
+  return {
+    dateISO: dv, month: pd.m, dow: pd.dow, year: pd.y, day: pd.d,
+    originId: $("f-origin").value,
+    startMin: Number($("f-start").value),
+    budgetMin: Number($("f-hours").value) * 60,
+    pace: $("f-pace").value,
+    interests: INTERESTS.filter(i => $("int-" + i.id).checked).map(i => i.id),
+    cost: $("f-cost").value,
+    effort: Number($("f-effort").value),
+    kids: $("f-kids").checked,
+    elders: $("f-elders").checked,
+    lunch: $("f-lunch").checked,
+    hiddenFirst: $("f-gems").checked,
+    seed: state.seed, skip: state.skip.slice()
+  };
+}
+
+function dateLabel(iso) {
+  const pd = parseISO(iso);
+  if (!pd) return iso;
+  return DAYS[pd.dow] + " " + pd.d + " " + MONTHS[pd.m - 1] + " " + pd.y;
+}
+function mapsHref(p) {
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(p.name + ", " + p.area);
+}
+function routeHref(res) {
+  const o = res.origin, pt = o.lat + "," + o.lng;
+  const way = res.stops.map(s => s.place.name + ", " + s.place.area).join("|");
+  return "https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=" + encodeURIComponent(pt) +
+    "&destination=" + encodeURIComponent(pt) + "&waypoints=" + encodeURIComponent(way);
+}
+function icsStamp(iso, min) {
+  const pd = parseISO(iso);
+  const m = Math.round(min);
+  return pd.y + String(pd.m).padStart(2, "0") + String(pd.d).padStart(2, "0") + "T" +
+    String(Math.floor(m / 60) % 24).padStart(2, "0") + String(m % 60).padStart(2, "0") + "00";
+}
+function edgeStop(when, title, sub, last) {
+  const s = el("div", "stop edge" + (last ? " last" : ""));
+  s.append(el("div", "when", when));
+  const b = el("div", "body");
+  b.append(el("h3", null, title));
+  if (sub) b.append(el("p", "area", sub));
+  s.append(b);
+  return s;
+}
+
+function lunchNode(it) {
+  const s = el("div", "stop lunch");
+  s.append(el("div", "when", t12(it.at)));
+  const b = el("div", "body");
+  b.append(el("h3", null, "Lunch break"), el("p", "area", "About " + dur(it.min)));
+  b.append(el("p", null, "Pick a busy place where food is cooked fresh, and drink water before the next stretch."));
+  s.append(b);
+  return s;
+}
+
+function stopNode(st, idx, dayNum) {
+  const p = st.place;
+  const s = el("div", "stop");
+  s.style.animationDelay = (idx * 60) + "ms";
+  s.append(el("div", "when", t12(st.arrive)));
+  const b = el("div", "body");
+  b.append(el("h3", null, p.name), el("p", "area", p.area));
+  const meta = el("ul", "meta");
+  meta.append(el("li", null, "About " + dur(st.visit)), el("li", null, COST_LABEL[p.cost]), el("li", null, EFFORT_LABEL[p.effort]));
+  if (p.kids) meta.append(el("li", null, "Fine with children"));
+  if (p.elders !== false) meta.append(el("li", null, "Fine for elders"));
+  if (p.gem === 3) meta.append(el("li", "gem", "Lesser-known"));
+  if (p.months) meta.append(el("li", null, "In season: " + monthRange(p.months)));
+  if (st.wait > 0) meta.append(el("li", null, "Opens at " + t12(st.arrive)));
+  if (st.lunchHere) meta.append(el("li", "gem", "Lunch here"));
+  b.append(meta, el("p", null, p.blurb));
+  const tip = el("p", "tip"); tip.append(el("b", null, "Local tip: "), document.createTextNode(p.tip)); b.append(tip);
+  if (p.note) { const n = el("p", "note"); n.append(el("b", null, "Check first: "), document.createTextNode(p.note)); b.append(n); }
+  if (st.reasons.length) {
+    const r = st.reasons.join(", ");
+    b.append(el("p", "why", "Why this stop: " + r.charAt(0).toLowerCase() + r.slice(1) + "."));
+  }
+  const links = el("div", "row-links");
+  const a = el("a", "maplink", "Open in Maps"); a.href = mapsHref(p); a.target = "_blank"; a.rel = "noopener";
+  const ph = el("a", "maplink", "See real photos"); ph.href = photosHref(p.name + " " + p.area); ph.target = "_blank"; ph.rel = "noopener";
+  const sk = el("button", "linkbtn", "Skip this stop"); sk.type = "button"; sk.dataset.skip = p.id;
+  links.append(a, ph, sk);
+  b.append(links);
+  s.append(b);
+  return s;
+}
+
+function legNode(min, km, rush) {
+  return el("div", "leg" + (rush ? " rush" : ""), "About " + dur(min) + " by road, " + Math.round(km) + " km" + (rush ? ", rush-hour traffic" : ""));
+}
+
+function bannerNode(o, res) {
+  const b = el("div", "banner");
+  const p1 = el("p");
+  p1.append(el("b", null, MONTHS[o.month - 1] + ": "), document.createTextNode(SEASON_NOTE[o.month]));
+  b.append(p1);
+  const p2 = el("p");
+  p2.append(el("b", null, DAYS[o.dow] + ". "), document.createTextNode("Sunrise about " + t12(res.sunrise) + ", sunset about " + t12(res.sunset) + ". Monuments that close at dusk are only planned before then."));
+  b.append(p2);
+  if (o.year === 2026 && o.month === 11 && o.day >= 4 && o.day <= 10) {
+    const p3 = el("p");
+    p3.append(el("span", "festival", "Diwali falls around 8 November. Expect crowded markets and temples, and shorter hours at some places. Confirm before you go."));
+    b.append(p3);
+  }
+  if (res.stops.some(s => s.rush) || (res.back && res.back.rush)) {
+    b.append(el("p", null, "Some drives fall in weekday rush hour, so the times below are stretched. Leaving a little earlier or later changes the plan."));
+  }
+  return b;
+}
+
+function dayBar(res) {
+  const total = res.driveMin + res.visitMin + res.lunchMin + res.waitMin;
+  const parts = [
+    { label: "Driving " + dur(res.driveMin), color: "var(--drive)", v: res.driveMin },
+    { label: "Visiting " + dur(res.visitMin), color: "var(--accent)", v: res.visitMin }
+  ];
+  if (res.lunchMin) parts.push({ label: "Lunch " + dur(res.lunchMin), color: "var(--lunch)", v: res.lunchMin });
+  if (res.waitMin) parts.push({ label: "Waiting " + dur(res.waitMin), color: "var(--line)", v: res.waitMin });
+  const bar = el("div", "daybar");
+  bar.setAttribute("role", "img");
+  bar.setAttribute("aria-label", parts.map(x => x.label).join(", "));
+  parts.forEach(x => { const i = el("i"); i.style.width = (x.v / total * 100) + "%"; i.style.background = x.color; bar.append(i); });
+  const leg = el("div", "legend");
+  parts.forEach(x => { const s = el("span", null, x.label); s.style.setProperty("--c", x.color); leg.append(s); });
+  const wrap = el("div");
+  wrap.append(bar, leg);
+  return wrap;
+}
+
+function actionLink(text, href, ghost) {
+  const a = el("a", "btn sm" + (ghost ? " ghost" : ""), text);
+  a.href = href; a.target = "_blank"; a.rel = "noopener";
+  return a;
+}
+
+function paint(res, o) {
+  outEl.replaceChildren();
+  outEl.append(bannerNode(o, res));
+  if (!res.stops.length) {
+    outEl.append(el("div", "empty", "Nothing fits that mix yet. Try more hours, another interest or day, or relax the entry cost and walking filters."));
+    if (state.skip.length) {
+      const r = el("button", "btn ghost sm", "Bring back skipped stops (" + state.skip.length + ")"); r.type = "button"; r.id = "btn-unskip";
+      r.style.marginTop = "12px";
+      outEl.append(r);
+    }
+  } else {
+    const sum = el("div", "summary");
+    sum.append(el("span", "big", res.stops.length + (res.stops.length === 1 ? " stop" : " stops")));
+    sum.append(el("span", "small", "about " + Math.round(res.totalKm) + " km, roughly ₹" + (Math.round(res.totalKm * 7 / 10) * 10) + " in petrol"));
+    sum.append(el("span", "small", "back by " + t12(res.back.at)));
+    outEl.append(sum);
+
+    const acts = el("div", "actions");
+    const sh = el("button", "btn sm", "Shuffle"); sh.type = "button"; sh.id = "btn-shuffle";
+    const cp = el("button", "btn ghost sm", "Copy plan"); cp.type = "button"; cp.id = "btn-copy";
+    cp.addEventListener("click", copyPlan);
+    acts.append(sh, cp,
+      actionLink("Route in Maps", routeHref(res), true),
+      actionLink("Share on WhatsApp", "https://wa.me/?text=" + encodeURIComponent(planText(res, o)), true),
+      actionLink("Add to Calendar", calendarHrefFor(res, o), true));
+    if (state.seed || state.skip.length) {
+      const r = el("button", "linkbtn", "Reset choices"); r.type = "button"; r.id = "btn-reset";
+      acts.append(r);
+    }
+    outEl.append(acts);
+    outEl.append(dayBar(res));
+    const box = el("div", "copybox"); box.id = "copybox"; box.hidden = true; outEl.append(box);
+
+    const tl = el("div", "timeline");
+    tl.append(edgeStop(t12(o.startMin), "Leave " + res.origin.name, "", false));
+    let n = 0;
+    res.items.forEach(it => {
+      if (it.kind === "lunch") { tl.append(lunchNode(it)); return; }
+      tl.append(legNode(it.travelMin, it.travelKm, it.rush));
+      tl.append(stopNode(it, n++));
+    });
+    tl.append(legNode(res.back.min, res.back.km, res.back.rush));
+    tl.append(edgeStop(t12(res.back.at), "Back near " + res.origin.name, "", true));
+    outEl.append(tl);
+  }
+  if (res.closedToday.length) {
+    const sec = el("div", "season");
+    sec.append(el("h2", null, "Closed on " + DAYS[o.dow] + "s"));
+    const ul = el("ul");
+    res.closedToday.forEach(p => ul.append(el("li", null, p.name + " is normally closed on " + DAYS[o.dow] + "s. Pick another day to include it.")));
+    sec.append(ul);
+    outEl.append(sec);
+  }
+  if (res.skippedSeason.length) {
+    const sec = el("div", "season");
+    sec.append(el("h2", null, "Saved for another season"));
+    const ul = el("ul");
+    res.skippedSeason.forEach(p => ul.append(el("li", null, p.name + " is best in " + monthRange(p.months) + ".")));
+    sec.append(ul);
+    outEl.append(sec);
+  }
+}
+
+function calendarHrefFor(res, o) {
+  const title = "Day out: " + res.stops[0].place.name + (res.stops.length > 1 ? " and " + (res.stops.length - 1) + " more" : "");
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(title) +
+    "&dates=" + icsStamp(o.dateISO, o.startMin) + "/" + icsStamp(o.dateISO, res.endAt) +
+    "&ctz=Asia%2FKolkata&location=" + encodeURIComponent(res.origin.name) +
+    "&details=" + encodeURIComponent(planText(res, o));
+}
+
+function planText(resArg, oArg) {
+  const res = resArg || lastPlan.res, o = oArg || lastPlan.o;
+  const lines = ["Aao Ghumne Chalte Hai, " + dateLabel(o.dateISO), "Start: " + res.origin.name + " at " + t12(o.startMin), ""];
+  res.items.forEach(it => {
+    if (it.kind === "lunch") lines.push(t12(it.at) + "  Lunch break, about " + dur(it.min));
+    else lines.push(t12(it.arrive) + "  " + it.place.name + " (" + it.place.area + "), about " + dur(it.visit));
+  });
+  lines.push(t12(res.back.at) + "  Back near " + res.origin.name);
+  lines.push("", "Sunset is about " + t12(res.sunset) + ". Confirm opening days, hours and fees before you go.");
+  return lines.join("\n");
+}
+
+async function copyPlan() {
+  if (!lastPlan || !lastPlan.res.stops.length) return;
+  const text = planText();
+  const box = $("copybox");
+  try {
+    await navigator.clipboard.writeText(text);
+    $("btn-copy").textContent = "Copied";
+    setTimeout(() => { const b = $("btn-copy"); if (b) b.textContent = "Copy plan"; }, 1800);
+  } catch (e) {
+    box.replaceChildren();
+    const ta = document.createElement("textarea");
+    ta.readOnly = true; ta.value = text; ta.setAttribute("aria-label", "Plan text");
+    box.append(ta); box.hidden = false; ta.focus(); ta.select();
+  }
+}
+
+/* ---------- Theme ---------- */
+const THEMES = ["auto", "light", "dark"];
+function applyTheme(t) {
+  const root = document.documentElement;
+  if (t === "light" || t === "dark") root.setAttribute("data-theme", t); else root.removeAttribute("data-theme");
+  $("btn-theme").textContent = "Theme: " + (t === "light" ? "Light" : t === "dark" ? "Dark" : "Auto");
+}
+function initTheme() {
+  const saved = recall(THEME_KEY);
+  let cur = THEMES.includes(saved) ? saved : "auto";
+  applyTheme(cur);
+  $("btn-theme").addEventListener("click", () => {
+    cur = THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length];
+    applyTheme(cur); store(THEME_KEY, cur);
+  });
+}
+
+/* ---------- Claude layer ---------- */
+function stopFacts(st, i) {
+  const p = st.place;
+  return (i + 1) + ". " + p.name + " (" + p.area + "), arrive " + t12(st.arrive) + ", stay about " + dur(st.visit) +
+    ". Facts: " + p.blurb + " Local tip: " + p.tip + (p.note ? " Check first: " + p.note : "");
+}
+
+function errCopy(e) {
+  switch (e && e.code) {
+    case "not_granted": return "Claude access was not allowed for this page, so the guide is switched off.";
+    case "sampling_disabled": return "Claude is not available for this account.";
+    case "rate_limited": return "Too many requests right now. Wait a minute, then try again.";
+    case "session_expired": return "Please sign in again, then try again.";
+    case "refused": return "Claude could not answer that. Try rewording it.";
+    case "cancelled": return "";
+    default: return "Something went wrong reaching Claude. Try again in a moment.";
+  }
+}
+
+function setBusy(busy) {
+  $("btn-guide").disabled = busy; $("btn-ask").disabled = busy; $("btn-stop").hidden = !busy;
+}
+
+function renderGuide(target, text, names) {
+  target.classList.remove("stream");
+  target.replaceChildren();
+  text.split(/\n{2,}/).forEach(block => {
+    const lines = block.trim().split("\n");
+    if (!lines[0]) return;
+    const head = lines[0].replace(/[*#]/g, "").replace(/^\d+\.\s*/, "").trim();
+    if (names.has(head)) {
+      target.append(el("h4", null, head));
+      const rest = lines.slice(1).join(" ").trim();
+      if (rest) target.append(el("p", null, rest));
+    } else {
+      target.append(el("p", null, lines.join(" ")));
+    }
+  });
+}
+
+async function callClaude(prompt, target, statusEl, names) {
+  if (!sampleFn) return;
+  ctl = new AbortController();
+  setBusy(true);
+  statusEl.textContent = "Thinking...";
+  target.replaceChildren();
+  try {
+    const r = await sampleFn(prompt, {
+      signal: ctl.signal,
+      onText: ({ text }) => { target.classList.add("stream"); target.textContent = text; statusEl.textContent = ""; }
+    });
+    renderGuide(target, r.text, names || new Set());
+    statusEl.textContent = r.truncated ? "The answer was cut short. Ask for less at a time." : "";
+  } catch (e) {
+    if (e && e.text) { target.classList.add("stream"); target.textContent = e.text; } else { target.replaceChildren(); }
+    statusEl.textContent = errCopy(e);
+    if (e && (e.code === "not_granted" || e.code === "sampling_disabled")) { $("btn-guide").hidden = true; $("btn-ask").hidden = true; }
+  } finally {
+    ctl = null;
+    setBusy(false);
+  }
+}
+
+function writeGuide() {
+  if (!lastPlan || !lastPlan.res.stops.length) { $("guide-status").textContent = "Build a plan with at least one stop first."; return; }
+  const { o, res } = lastPlan;
+  const lang = $("f-lang").value;
+  const interests = o.interests.length ? o.interests.map(t => TAG_LABEL[t]).join(", ") : "anything interesting";
+  const who = (o.kids ? "Children are in the group. " : "") + (o.elders ? "Elders are in the group, so keep the tone calm and mention easy pacing. " : "") + (!o.kids && !o.elders ? "Adults only. " : "");
+  let n = 0;
+  const route = res.items.map(it => it.kind === "lunch"
+    ? "(A lunch break of about " + dur(it.min) + " at " + t12(it.at) + ".)"
+    : stopFacts(it, n++)).join("\n");
+  const prompt =
+    "You are a warm, practical local guide for Delhi NCR, writing for someone planning a day out.\n" +
+    "Date: " + dateLabel(o.dateISO) + ". Starting from " + res.origin.name + " at " + t12(o.startMin) + ". " + who + "Interests: " + interests + ".\n" +
+    "Season: " + SEASON_NOTE[o.month] + " Sunset is about " + t12(res.sunset) + ".\n\n" +
+    "The route is already planned. Do not change the order or times:\n" + route + "\n" +
+    "Back near " + res.origin.name + " at about " + t12(res.back.at) + ".\n\n" +
+    "Write the guide in " + lang + ". Format: one opening paragraph of two sentences about the rhythm of the day. Then, for each numbered stop, the stop name exactly as written above alone on its own line, followed by a paragraph of two to three sentences on what to notice and one respectful-behaviour or safety tip. Mention the lunch break inside a stop paragraph or the closing paragraph, never as its own heading. End with a short paragraph on what to carry for this season and a reminder to confirm opening days, hours and fees. " +
+    "Plain text only, no markdown symbols, no bullets, no numbering. Under 420 words in total. Use only the facts given and well-established general knowledge. Do not invent restaurant names, prices, opening hours, ticket costs or phone numbers. If a detail is not given, leave it out.";
+  callClaude(prompt, $("guide-out"), $("guide-status"), new Set(res.stops.map(s => s.place.name)));
+}
+
+function askGuide() {
+  if (!lastPlan || !lastPlan.res.stops.length) return;
+  const q = $("ask-q").value.trim();
+  if (!q) { $("ask-status").textContent = "Type a question first."; return; }
+  const st = lastPlan.res.stops.find(s => s.place.id === $("ask-stop").value);
+  if (!st) return;
+  const p = st.place;
+  const prompt =
+    "You are a careful local guide for Delhi NCR. A visitor asks about " + p.name + " (" + p.area + ").\n" +
+    "Known facts: " + p.blurb + " Local tip: " + p.tip + (p.note ? " Check first: " + p.note : "") + " Typical visit: about " + dur(st.visit) + ". " +
+    "Entry: " + COST_LABEL[p.cost] + ". Walking: " + EFFORT_LABEL[p.effort] + ". Planned arrival: " + t12(st.arrive) + " on " + dateLabel(lastPlan.o.dateISO) + ".\n\n" +
+    "Question: " + q + "\n\n" +
+    "Answer in at most 120 words, in the same language as the question. Use the facts above and well-established general knowledge. If you are not sure, say so and suggest confirming locally. Do not invent opening hours, prices, phone numbers or business names.";
+  callClaude(prompt, $("ask-out"), $("ask-status"), new Set());
+}
+
+/* ---------- Destination search ---------- */
+const DESTINATIONS = ["Jaipur", "Agra", "Rishikesh", "Udaipur", "Manali", "Varanasi"];
+let dctl = null;
+
+function photosHref(q) { return "https://www.google.com/search?tbm=isch&q=" + encodeURIComponent(q); }
+
+function setDestBusy(busy) { $("btn-dest").disabled = busy; $("btn-dest-stop").hidden = !busy; }
+
+function destCard(item, dest) {
+  const c = el("div", "dcard");
+  const ph = el("div", "dphoto", "Sketching a picture...");
+  const b = el("div", "dbody");
+  b.append(el("h3", null, item.name));
+  if (item.area) b.append(el("p", "area", item.area));
+  const meta = el("ul", "meta");
+  if (item.kind) meta.append(el("li", null, item.kind));
+  if (item.time_needed) meta.append(el("li", null, "About " + item.time_needed));
+  if (item.best_time) meta.append(el("li", null, "Best: " + item.best_time));
+  if (meta.children.length) b.append(meta);
+  if (item.why) b.append(el("p", null, item.why));
+  const a = el("a", "maplink", "Open in Maps");
+  a.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(item.name + ", " + dest);
+  a.target = "_blank"; a.rel = "noopener";
+  const pa = el("a", "maplink", "See real photos");
+  pa.href = photosHref(item.name + " " + dest); pa.target = "_blank"; pa.rel = "noopener";
+  const links = el("div", "row-links");
+  links.append(a, pa);
+  b.append(links);
+  c.append(ph, b);
+  c.photoBox = ph;
+  return c;
+}
+
+function svgSrc(svg) {
+  if (typeof svg !== "string") return null;
+  const s = svg.trim();
+  if (!/^<svg[\s>]/i.test(s) || s.length > 9000 || /<script|<foreignObject|<image|<iframe|\son\w+\s*=|javascript:/i.test(s)) return null;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(s);
+}
+
+async function illustrate(dest, items, cards, signal) {
+  const names = items.map((x, i) => (i + 1) + ". " + x.name + " (" + x.area + ")").join("\n");
+  const prompt =
+    "Draw one small flat illustration for each of these places in " + dest + ":\n" + names + "\n\n" +
+    "Reply with only a JSON array of strings, one SVG per place, in the same order. Each SVG: viewBox=\"0 0 320 180\" with xmlns=\"http://www.w3.org/2000/svg\"; " +
+    "show the place's recognisable landmark or landscape in layered flat shapes with a sky gradient; no text, no scripts, no images, no external references; " +
+    "only rect, circle, ellipse, polygon, path, linearGradient and g; every shape has an explicit fill; at most 2200 characters per SVG. " +
+    "If you are unsure how a place looks, draw a simple scene of its setting (hills, water, skyline, gardens).";
+  const list = await sampleFn.json(prompt, { signal });
+  cards.forEach((c, i) => {
+    const src = Array.isArray(list) ? svgSrc(list[i]) : null;
+    if (!src) { c.photoBox.textContent = "No picture drawn. Use the photos link below."; return; }
+    const img = document.createElement("img");
+    img.src = src; img.alt = "Illustration of " + items[i].name;
+    img.style.cssText = "width:100%;height:100%;object-fit:cover;display:block";
+    c.photoBox.replaceChildren(img);
+    c.photoBox.style.padding = "0";
+  });
+}
+
+function renderDest(dest, list) {
+  const out = $("dest-out");
+  out.replaceChildren();
+  const items = (Array.isArray(list) ? list : []).filter(x => x && typeof x.name === "string" && x.name.trim()).slice(0, 8);
+  if (!items.length) {
+    out.append(el("div", "empty", "No places came back for " + dest + ". Try a city or region name, like Jaipur or Coorg."));
+    return null;
+  }
+  out.append(el("h3", "dest-title", "Best places in " + dest));
+  out.append(destLinks(dest));
+  const grid = el("div", "dest-grid");
+  const cleanItems = [], cards = [];
+  items.forEach(it => {
+    const clean = {};
+    ["name", "area", "kind", "why", "best_time", "time_needed"].forEach(k => { clean[k] = typeof it[k] === "string" ? it[k].trim().slice(0, 220) : ""; });
+    const card = destCard(clean, dest);
+    cleanItems.push(clean); cards.push(card);
+    grid.append(card);
+  });
+  out.append(grid);
+  return { items: cleanItems, cards };
+}
+
+function destLinks(q) {
+  const row = el("div", "actions");
+  row.style.paddingTop = "12px";
+  row.append(
+    actionLink("See real photos of " + q, photosHref(q + " tourist places")),
+    actionLink("Best places to visit in " + q, "https://www.google.com/search?q=" + encodeURIComponent("best places to visit in " + q), true),
+    actionLink("Open " + q + " in Maps", "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q), true));
+  return row;
+}
+
+async function searchDest(name) {
+  const q = (name || $("dest-q").value).replace(/\s+/g, " ").trim().slice(0, 60);
+  if (!q) { $("dest-status").textContent = "Type a destination first."; return; }
+  $("dest-q").value = q;
+  if (!sampleFn) {
+    const out = $("dest-out");
+    out.replaceChildren(el("h3", "dest-title", "Photos and places for " + q), destLinks(q));
+    $("dest-status").textContent = "These links open in a new tab. The list of best places with sketches appears when this page is opened inside Claude.";
+    return;
+  }
+  if (dctl) dctl.abort();
+  dctl = new AbortController();
+  const mine = dctl;
+  setDestBusy(true);
+  $("dest-status").textContent = "Thinking...";
+  $("dest-out").replaceChildren();
+  const prompt =
+    "A traveller wants the best places to visit in this destination: " + q + "\n\n" +
+    "Reply with only a JSON array of 6 to 8 objects, ordered from most worthwhile to least. Each object has these string fields: " +
+    "name (the place's well-known name), area (the town or district), kind (a short label such as Heritage, Nature, Food, Spiritual, Markets or Viewpoint), " +
+    "why (one sentence of at most 25 words on why it is worth visiting), best_time (best season or time of day, short), time_needed (such as 2 hours). " +
+    'Example: [{"name":"Amber Fort","area":"Amer","kind":"Heritage","why":"A hilltop fort of sandstone and marble with courtyards and wide views.","best_time":"Early morning, Oct to Mar","time_needed":"2 to 3 hours"}]\n' +
+    "Use only well-established facts. Do not include prices, opening hours, phone numbers or invented businesses. " +
+    "If the destination is not a real place, reply with [].";
+  try {
+    const list = await sampleFn.json(prompt, { signal: mine.signal });
+    const shown = renderDest(q, list);
+    $("dest-status").textContent = "";
+    if (shown) {
+      $("dest-status").textContent = "Sketching pictures...";
+      try {
+        await illustrate(q, shown.items, shown.cards, mine.signal);
+        $("dest-status").textContent = "Pictures are illustrations. Use See real photos for actual photographs.";
+      } catch (e2) {
+        shown.cards.forEach(c => { c.photoBox.textContent = "No picture drawn. Use the photos link below."; });
+        $("dest-status").textContent = e2 && e2.code === "cancelled" ? "" : "Pictures could not be drawn. Use See real photos on each card.";
+      }
+    }
+  } catch (e) {
+    $("dest-out").replaceChildren();
+    $("dest-status").textContent = (e && e.code === "invalid_json") ? "That answer could not be read. Try the search again." : errCopy(e);
+    if (e && (e.code === "not_granted" || e.code === "sampling_disabled")) {
+      sampleFn = null;
+      $("dest-out").replaceChildren(el("h3", "dest-title", "Photos and places for " + q), destLinks(q));
+    }
+  } finally {
+    if (dctl === mine) { dctl = null; setDestBusy(false); }
+  }
+}
+
+function syncAsk() {
+  const sel = $("ask-stop"), prev = sel.value;
+  sel.replaceChildren();
+  if (!lastPlan) return;
+  lastPlan.res.stops.forEach(st => { const op = el("option", null, st.place.name); op.value = st.place.id; sel.append(op); });
+  if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
+}
+
+function render() {
+  if (ctl) ctl.abort();
+  const o = readForm();
+  const res = planDay(o);
+  lastPlan = { o, res };
+  paint(res, o);
+  syncAsk();
+  ["guide-out", "ask-out"].forEach(id => { $(id).replaceChildren(); });
+  ["guide-status", "ask-status"].forEach(id => { $(id).textContent = ""; });
+  if (sampleFn) $("ai").hidden = !res.stops.length;
+}
+
+buildForm();
+loadPrefs();
+initTheme();
+form.addEventListener("submit", e => e.preventDefault());
+form.addEventListener("change", () => { savePrefs(); render(); });
+outEl.addEventListener("click", e => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  if (t.dataset.skip) { state.skip.push(t.dataset.skip); render(); }
+  else if (t.id === "btn-shuffle") { state.seed = Math.floor(Math.random() * 1e6) + 1; render(); }
+  else if (t.id === "btn-reset" || t.id === "btn-unskip") { state.seed = 0; state.skip = []; render(); }
+});
+DESTINATIONS.forEach(d => {
+  const b = el("button", null, d); b.type = "button";
+  b.addEventListener("click", () => searchDest(d));
+  $("dest-chips").append(b);
+});
+$("btn-dest").addEventListener("click", () => searchDest());
+$("btn-dest-stop").addEventListener("click", () => { if (dctl) dctl.abort(); });
+$("dest-q").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); searchDest(); } });
+$("btn-guide").addEventListener("click", writeGuide);
+$("btn-ask").addEventListener("click", askGuide);
+$("btn-stop").addEventListener("click", () => { if (ctl) ctl.abort(); });
+$("ask-q").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); askGuide(); } });
+render();
+
+(async () => {
+  try {
+    if (window.claude && window.claude.use) sampleFn = await window.claude.use("sample");
+  } catch (e) { sampleFn = null; }
+  if (sampleFn) { $("ai").hidden = !(lastPlan && lastPlan.res.stops.length); $("explore").hidden = false; }
+  else { $("ai-absent").hidden = false; }
+})();
+</script>
+
+</body></html>
